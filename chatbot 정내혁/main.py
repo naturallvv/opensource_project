@@ -1,0 +1,3 @@
+import jedol
+
+jedol.start()
