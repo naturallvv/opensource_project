@@ -6,10 +6,10 @@ class MyHandler(socketserver.BaseRequestHandler):
     def handle(self):
         # START
         while True:
-            self.request.send('Input NAME : '.encode())
+            self.request.send('Please Send Your NAME'.encode())
             nickname = self.request.recv(1024).decode()
             if nickname in self.users:
-                self.request.send('This name is already registered.\n'.encode())
+                self.request.send('This NAME is Already Registered.\n'.encode())
             else:
                 self.users[nickname] = (self.request, self.client_address)
 

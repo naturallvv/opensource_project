@@ -3,6 +3,12 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVB
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import QPainter, QPen, QColor
 
+import socket
+from threading import Thread
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Main GUI
 class Chat_GUI(QWidget):
     def __init__(self):
         super().__init__()
@@ -22,52 +28,86 @@ class Chat_GUI(QWidget):
         self.initUI()
 
     def initUI(self):
-        input_ip = QLineEdit()
-        input_ip.setPlaceholderText('Input Your IP Address:Port')
+        self.x_btn = Ripple_BTN('  X  ')
+        self.x_btn.pressed.connect(self.quit_chat)
 
-        input_name = QLineEdit()
-        input_name.setPlaceholderText('Input Your NickNAME')
+        self.input_ip = QLineEdit()
+        self.input_ip.setText('127.0.0.1')
+        self.input_ip.setPlaceholderText('Input Your IP Address')
 
-        apply_btn = Ripple_BTN('Apply')
+        self.apply_btn = Ripple_BTN('Apply')
+        self.apply_btn.pressed.connect(self.ip_apply)
 
-        chat_box = QTextBrowser()
+        self.chat_box = QTextBrowser()
 
-        gesture_btn = Ripple_BTN('G')
-        input_chat = QLineEdit()
-        send_btn = Ripple_BTN('  ▷  ')
+        self.gesture_btn = Ripple_BTN('  G  ')
+
+        self.input_chat = QLineEdit()
+        self.input_chat.returnPressed.connect(self.send_chat)
+
+        self.send_btn = Ripple_BTN('  ▷  ')
+        self.send_btn.pressed.connect(self.send_chat)
 
         # TOP
-        VBox0 = QVBoxLayout()
-        VBox0.addWidget(input_ip)
-        VBox0.addWidget(input_name)
-
-        HBox0 = QHBoxLayout()
-        HBox0.addLayout(VBox0)
-        HBox0.addWidget(apply_btn)
+        self.HBox0 = QHBoxLayout()
+        self.HBox0.addWidget(self.x_btn)
+        self.HBox0.addWidget(self.input_ip)
+        self.HBox0.addWidget(self.apply_btn)
 
         # BOTTOM
-        HBox1 = QHBoxLayout()
-        HBox1.addWidget(gesture_btn)
-        HBox1.addWidget(input_chat)
-        HBox1.addWidget(send_btn)
+        self.HBox1 = QHBoxLayout()
+        self.HBox1.addWidget(self.gesture_btn)
+        self.HBox1.addWidget(self.input_chat)
+        self.HBox1.addWidget(self.send_btn)
 
         # CENTER
-        VBoxM = QVBoxLayout()
-        VBoxM.addLayout(HBox0)
-        VBoxM.addWidget(chat_box)
-        VBoxM.addLayout(HBox1)
+        self.VBoxM = QVBoxLayout()
+        self.VBoxM.addLayout(self.HBox0)
+        self.VBoxM.addWidget(self.chat_box)
+        self.VBoxM.addLayout(self.HBox1)
 
-        self.setLayout(VBoxM)
+        self.setLayout(self.VBoxM)
 
         self.setWindowTitle('Chat_GUI')
+        self.setWindowFlags(Qt.WindowMaximizeButtonHint)
         self.setFixedSize(300, 500)
         self.show()
 
+    # real-time message
+    def recv_message(self, sock):
+        while True:
+            msg = sock.recv(1024)
+            self.chat_box.append(msg.decode())
+
+    # input ip address
+    def ip_apply(self):
+        text = self.input_ip.text()
+        sock.connect((text, 8274))
+
+        # Warning! : QThread 불가피한 미사용
+        thr = Thread(target = self.recv_message, args = (sock, ))
+        thr.daemon = True
+        thr.start()
+
+        self.input_ip.setDisabled(True)
+        self.apply_btn.setDisabled(True)
+
+    # send chat
+    def send_chat(self):
+        text = self.input_chat.text()
+        sock.send(text.encode())
+        self.input_chat.clear()
+
+    # quit chat
+    def quit_chat(self):
+        sock.send('/exit'.encode())
+
+# Ripple Button
 class Ripple_BTN(QPushButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.r = 0
-        self.countr = 0    
+        self.countr = 0
         self.timer = QTimer(interval = 70, timeout = self.set_radius)
 
     def set_radius(self):
@@ -106,3 +146,5 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     cg = Chat_GUI()
     sys.exit(app.exec_())
+    
+sock.close()
