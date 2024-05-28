@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTextBrowser, QLineEdit
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import QPainter, QPen, QColor
 
-class Graphic_UI(QWidget):
+class Chat_GUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setStyleSheet('''
@@ -22,24 +22,45 @@ class Graphic_UI(QWidget):
         self.initUI()
 
     def initUI(self):
-        Ok_BTN = Ripple_BTN('OK')
-        Cancel_BTN = Ripple_BTN('Cancel')
+        input_ip = QLineEdit()
+        input_ip.setPlaceholderText('Input Your IP Address:Port')
 
-        HBox = QHBoxLayout()
-        HBox.addStretch(1)
-        HBox.addWidget(Ok_BTN)
-        HBox.addWidget(Cancel_BTN)
-        HBox.addStretch(1)
+        input_name = QLineEdit()
+        input_name.setPlaceholderText('Input Your NickNAME')
 
-        VBox = QVBoxLayout()
-        VBox.addStretch(3)
-        VBox.addLayout(HBox)
-        VBox.addStretch(1)
+        apply_btn = Ripple_BTN('Apply')
 
-        self.setLayout(VBox)
+        chat_box = QTextBrowser()
 
-        self.setWindowTitle('Graphic_UI')
-        self.resize(300, 500)
+        gesture_btn = Ripple_BTN('G')
+        input_chat = QLineEdit()
+        send_btn = Ripple_BTN('  ▷  ')
+
+        # TOP
+        VBox0 = QVBoxLayout()
+        VBox0.addWidget(input_ip)
+        VBox0.addWidget(input_name)
+
+        HBox0 = QHBoxLayout()
+        HBox0.addLayout(VBox0)
+        HBox0.addWidget(apply_btn)
+
+        # BOTTOM
+        HBox1 = QHBoxLayout()
+        HBox1.addWidget(gesture_btn)
+        HBox1.addWidget(input_chat)
+        HBox1.addWidget(send_btn)
+
+        # CENTER
+        VBoxM = QVBoxLayout()
+        VBoxM.addLayout(HBox0)
+        VBoxM.addWidget(chat_box)
+        VBoxM.addLayout(HBox1)
+
+        self.setLayout(VBoxM)
+
+        self.setWindowTitle('Chat_GUI')
+        self.setFixedSize(300, 500)
         self.show()
 
 class Ripple_BTN(QPushButton):
@@ -83,5 +104,5 @@ class Ripple_BTN(QPushButton):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    cg = Graphic_UI()
+    cg = Chat_GUI()
     sys.exit(app.exec_())

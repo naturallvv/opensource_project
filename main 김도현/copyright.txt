@@ -1,0 +1,10 @@
+pyqt learn : https://wikidocs.net/21946
+
+PyQt5 Ripple Button
+https://stackoverflow.com/questions/64818740/how-to-add-ripple-effect
+
+Chat Server-Client
+https://blog.naver.com/nkj2001/222742365805
+
+ML : Gesture Recognition
+https://github.com/kairess/gesture-recognition
