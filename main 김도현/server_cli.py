@@ -1,47 +1,49 @@
 import socketserver
 
+port = 8274
+
 class MyHandler(socketserver.BaseRequestHandler):
     users = {}
-
     def handle(self):
-        # START
         while True:
-            self.request.send('Please Send Your NAME'.encode())
+            self.request.send('채팅 닉네임을 전송하세요.'.encode())
             nickname = self.request.recv(1024).decode()
+
             if nickname in self.users:
-                self.request.send('This NAME is Already Registered.\n'.encode())
+                self.request.send('이미 등록된 닉네임입니다.\n'.encode())
             else:
                 self.users[nickname] = (self.request, self.client_address)
 
-            for sock, _ in self.users.values():
-                sock.send(f'{nickname}님이 입장했습니다.'.encode())
-                
-            print(f'Concurrent Users : {len(self.users)}') # SERVER PRINT
-            break
+                for sock, _ in self.users.values():
+                    sock.send(f'{nickname}님이 입장했습니다.'.encode())
 
-        # CENTER
+                print(f'현재 {len(self.users)}명 참여 중...')
+                break
+
         while True:
             msg = self.request.recv(1024)
+            
+            # 명령어 처리
             if msg.decode() == '/exit':
+                print('exit client')
                 self.request.close()
                 break
 
             for sock, _ in self.users.values():
                 sock.send(f'[{nickname}] {msg.decode()}'.encode())
 
-        # END
         if nickname in self.users:
             del self.users[nickname]
 
             for sock, _ in self.users.values():
                 sock.send(f'{nickname}님이 퇴장했습니다.'.encode())
-                
-            print(f'Concurrent Users : {len(self.users)}') # SERVER PRINT
 
+            print(f'현재 {len(self.users)}명 참여 중...')
+            
 class Chat_SERVER(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
-server = Chat_SERVER(('', 8274), MyHandler)
+server = Chat_SERVER(('', port), MyHandler)
 server.serve_forever()
 
 server.shutdown()
