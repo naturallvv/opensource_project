@@ -8,3 +8,6 @@ class ChatServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
 server = ChatServer(("", 8274), MyHandler)
+server.serve_forever()
+server.shutdown()
+server.server_close()
