@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote  # 올바른 임포트입니다
 
 def lol():
-    params = input("소환사 명: ")
+    params = input("소환사 명(ex 소환사#KR1): ")
     # '#'을 '-'로 바꾸기
     params = params.replace("#", "-")
     url = 'https://www.op.gg/summoners/kr/'
