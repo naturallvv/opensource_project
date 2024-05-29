@@ -1,4 +1,5 @@
 import socketserver
+from jedol_bot.jedol import Jedol
 
 port = 8274
 
@@ -22,8 +23,7 @@ class MyHandler(socketserver.BaseRequestHandler):
 
         while True:
             msg = self.request.recv(1024)
-            
-            # 명령어 처리
+                        
             if msg.decode() == '/exit':
                 print('exit client')
                 self.request.close()
@@ -31,6 +31,7 @@ class MyHandler(socketserver.BaseRequestHandler):
 
             for sock, _ in self.users.values():
                 sock.send(f'[{nickname}] {msg.decode()}'.encode())
+                Jedol(sock, msg.decode())
 
         if nickname in self.users:
             del self.users[nickname]
