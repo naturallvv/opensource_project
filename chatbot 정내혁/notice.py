@@ -1,32 +1,40 @@
 import requests
 from bs4 import BeautifulSoup
-import re
 
-def notice() :
-    url = 'http://www.kpu.ac.kr/front/boardlist.do?currentPage=1&menuGubun=1&siteGubun=14&bbsConfigFK=1&searchField=ALL' \
-          '&searchValue=&searchLowItem=ALL'
-    html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+def get_jnu_notice():
+    url = "https://jejunu.ac.kr/index.htm"
+    
+    # 페이지 요청
+    response = requests.get(url)
+    response.encoding = 'utf-8'
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    title_box = soup.find_all("span" , { "class" : "text" })
-
-    titles_box = []
-    for item in title_box :
-        titles_box += item
-
-    # 학사 공지 1페이지 전체 제목 리스트
-    titles = []
-    for item in range(len(titles_box)) :
-        titles.append(titles_box[item].replace("\r", "").replace("\n", "").replace("\t", ""))
-
-    dates = []
-    for item in range(len(title_box)) :
-        dates.append(str(soup.select("body > form:nth-child(1) > div > div.bbs.list.mt15.bt1 > table > tbody > "
-                                     "tr:nth-child("+str(item+1)+") > td:nth-child(5)")[0]).split(">")[1].split("<")[0])
-
-    #1페이지 전체 출력...
-    print("학사공지 1페이지 자료입니다.")
-    for item in range(len(titles)):
-        print(dates[item], ":", titles[item])
-    print("자세한 사항은 학사공지를 참조하세요!")
-    print("본 정보는 한국산업기술대학교 홈페이지를 바탕으로 제공됩니다.")
+    # 학사 공지 추출
+    try:
+        notices = soup.find('div', class_='new_notice').find_all('li')
+        titles = []
+        dates = []
+        links = []
+        
+        for notice in notices:
+            title = notice.find('span', class_='title').get_text(strip=True)
+            date = notice.find('span', class_='date').get_text(strip=True)
+            href = notice.find('a')['href']
+            full_url = "https://jejunu.ac.kr" + href
+            titles.append(title)
+            dates.append(date)
+            links.append(full_url)
+        
+        # 결과 출력
+        print("JNU 알림 1페이지 자료입니다.")
+        for i in range(len(titles)):
+            print(f"날짜: {dates[i]}")
+            print(f"제목: {titles[i]}")
+            print(f"링크: {links[i]}")
+            print("---------------")
+        print("자세한 사항은 URL을 눌러 확인하세요.")
+        print("본 정보는 제주대학교 홈페이지를 바탕으로 제공됩니다.")
+    
+    except AttributeError as e:
+        print("학사 공지를 찾을 수 없습니다.")
+        print(e)
