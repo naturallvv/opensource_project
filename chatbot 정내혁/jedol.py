@@ -8,12 +8,12 @@ import random
 # 기능 보여줄 함수
 def funcText():
     print("-----------기능-----------")
-    print("학식 식단표 : 학식, ㅎㅅ")
-    print("셔틀 시간표 : 셔틀, ㅅㅌ")
-    print("날씨 : 날씨, ㄴㅆ")
-    print("학사 공지 : 공지, ㄱㅈ")
-    print("게임전적검색 : 게임, ㄱㅇ")
-    print("제돌이 끄기 : 제바, ㅈㅂ")
+    print("학식 식단표 : 학식")
+    print("셔틀 시간표 : 셔틀")
+    print("날씨 : 날씨")
+    print("학사 공지 : 공지")
+    print("게임전적검색 : 게임")
+    print("제돌이 끄기 : 제바")
 
 # 제돌이 메인 함수
 def start():
@@ -35,19 +35,19 @@ def start():
             print("무엇이든 말씀하세요!")
 
         inp = input()
-        if '기능' in inp or 'ㄱㄴ' in inp:
+        if inp == '기능':
             funcText()
-        elif '학식' in inp or 'ㅎㅅ' in inp or '메뉴' in inp or 'ㅁㄴ' in inp or '밥' in inp or 'ㅂ' in inp or '배고' in inp:
+        elif inp == '학식':
             pass
-        elif '셔틀' in inp or 'ㅅㅌ' in inp:
+        elif inp == '셔틀':
             station.main()
-        elif '날씨' in inp or 'ㄴㅆ' in inp:
+        elif inp == '날씨':
             weather.weather()
-        elif '공지' in inp or 'ㄱㅈ' in inp:
+        elif inp == '공지':
             notice.get_jnu_notice()
-        elif '게임' in inp or 'ㄱㅇ' in inp:
+        elif inp == '게임':
             game.lol()
-        elif '제바' in inp or 'ㅈㅂ' in inp:
+        elif inp == '제바':
             print("이용해줘서 감사해요!")
             break
         else:
