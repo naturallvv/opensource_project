@@ -1,63 +1,51 @@
-# OP.GG에서 소환사명을 입력받아 인게임 전적을 파싱하는 크롤러
 import requests
 from bs4 import BeautifulSoup
-import re
+from urllib.parse import quote  # 올바른 임포트입니다
 
-def lol() :
-	params = input("소환사 명 : ")
-	url = 'https://www.op.gg/summoner/userName='
-	target_url = url+params
-	html = requests.get(target_url).text
+def lol():
+    params = input("소환사 명: ")
+    # '#'을 '-'로 바꾸기
+    params = params.replace("#", "-")
+    url = 'https://www.op.gg/summoners/kr/'
+    target_url = url + quote(params)  # URL 인코딩
+    html = requests.get(target_url).text
 
-	soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'html.parser')
 
-	#소환사명
-	name = params
+    # 소환사명
+    name = params
 
-	try :
-		#소환사 여부
-		non_summoner = str(soup.find_all("h2", {"class" : "Title"})[0]).split(">")[1].split("<")[0]
-		print(non_summoner)
-	except :
-		try :
-			# 언랭 판별
-			isUnranked = str(soup.find_all("div", {"class": "TierRank unranked"})[0]).split(">")[1].split("<")[0].strip()
-			print(name, "소환사님 정보입니다.")
-			print("Tier :", "Unranked")
-			print("본 정보는 op.gg의 검색결과를 바탕으로 제공됩니다!")
-		except :
-			try :
-				# 솔로랭크
-				solo_tier = str(soup.find_all("div", {"class": "TierRank"})[0]).split(">")[1].split("<")[0].strip()
-				solo_point = str(soup.find_all("span", {"class": "LeaguePoints"})[0]).split(">")[1].split("<")[0].strip().replace(" ", "")
-				solo_wins = str(soup.find_all("span", {"class": "wins"})[0]).split(">")[1].split("<")[0].strip()
-				solo_lose = str(soup.find_all("span", {"class": "losses"})[0]).split(">")[1].split("<")[0].strip()
-				solo_rate = str(soup.find_all("span", {"class": "winratio"})[0]).split(">")[1].split("<")[0].strip()
+    try:
+        # 언랭 판별
+        is_unranked = soup.find("div", {"class": "TierRank unranked"}).get_text(strip=True)
+        print(f"{name} 소환사님 정보입니다.")
+        print("Tier: Unranked")
+        print("본 정보는 op.gg의 검색결과를 바탕으로 제공됩니다!")
+    except:
+        try:
+            # 솔로랭크 티어
+            solo_tier = soup.find("div", {"class": "tier"}).get_text(strip=True)
 
-				print(name, "소환사님 정보입니다.")
-				print("-----솔로랭크-----")
-				print('Tier :', solo_tier, solo_point)
-				print('Win & Lose :', solo_wins, solo_lose)
-				print('Raiting :', solo_rate, "\n")
-			except:
-				print("-----솔로랭크-----")
-				print("Tier :", "Unranked")
-			try :
-				# 자유랭크
-				free_tier = str(soup.find_all("div", {"class": "sub-tier__rank-tier"})[0]).split(">")[1].split("<")[0].strip()
-				free_point = str(soup.find_all("div", {"class": "sub-tier__league-point"})[0]).split(">")[1].split("<")[0].strip()
-				free_wins_lose = str(soup.find_all("span", {"class": "sub-tier__gray-text"})[0]).split(">")[1].split("<")[0].split("/")[
-					1].strip()
-				free_rate = str(soup.find_all("div", {"class": "sub-tier__gray-text"})[0]).split(">")[1].split("<")[0].strip().replace("승률", "Win Ratio")
+            win_lose_div = soup.find("div", {"class": "win-lose"})
+            wins = win_lose_div.contents[0].strip()  # 첫 번째 자식 노드의 텍스트 (승)
+            losses = win_lose_div.contents[4].strip()  # 세 번째 자식 노드의 텍스트 (패)
 
-				print("-----자유랭크-----")
-				print('Tier :', free_tier, free_point)
-				print('Win & Lose :', free_wins_lose)
-				print('Raiting :', free_rate)
-				print("본 정보는 op.gg의 검색결과를 바탕으로 제공됩니다!")
-			except:
-				print("-----자유랭크-----")
-				print("Tier :", "Unranked")
+            # 승률 정보
+            win_ratio_div = soup.find("div", {"class": "ratio"})
+            win_ratio = ''.join(win_ratio_div.stripped_strings)  # 모든 텍스트 노드 합침 (승률 포함)
+
+            print(f"{name} 소환사님 정보입니다.")
+            print("-----솔로랭크-----")
+            print(f"티어: {solo_tier}")
+            print(f"승&패: {wins} {losses}")
+            print(f"승률: {win_ratio}")
+        except Exception as e:
+            print("솔로랭크 정보를 찾을 수 없습니다.")
+            print(f"오류: {e}")
+
+lol()
+
+
 
 # def maple() :
 # 	try :

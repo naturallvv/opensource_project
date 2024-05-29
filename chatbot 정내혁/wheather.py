@@ -103,5 +103,3 @@ def weather():
         print("지역을 찾을 수 없거나 동일한 지역명이 여러 개 존재해요!")
         print("ex)연동 -> 제주시연동")
         print(f"Error: {e}")
-
-weather()
