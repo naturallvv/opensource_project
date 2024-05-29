@@ -1,50 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
-import time
-import re
 
-def menu() :
-    try :
-        url = 'http://localhost:8080/crawling/main.jsp'
-        html = requests.get(url).text
-        soup = BeautifulSoup(html, 'html.parser')
-        lunBox = soup.find_all("tr")[1]
-        dinBox = soup.find_all("tr")[2]
+# 웹사이트 URL
+url = 'https://cms.jejunu.ac.kr/camp/stud/foodmenu.htm'
 
-        lunTd = str(lunBox).replace("\t", "").replace("\r", "").replace("</td>", "").replace("\n", "").replace("amp;",
-                "").replace("<tr>", "").replace("<tr>","").replace("</tr>", "").split("<td>")
-        if lunTd[0] == "" :
-            lunTd.remove("")
+# GET 요청을 보내 웹페이지 가져오기
+response = requests.get(url)
 
-        dinTd = str(dinBox).replace("\t", "").replace("\r", "").replace("</td>", "").replace("\n", "").replace("amp;",
-                "").replace("<tr>", "").replace("<tr>","").replace("</tr>", "").split("<td>")
-        if dinTd[0] == "":
-            dinTd.remove("")
+# 요청이 성공했는지 확인
+if response.status_code == 200:
+    # BeautifulSoup을 사용하여 HTML 파싱
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # 메뉴 정보를 포함한 테이블 찾기
+    table = soup.find('table', {'class': 'contents-table'})
 
-        #월 = 0 ~ 일 = 6
-        today = time.localtime().tm_wday
+    # 메뉴 정보를 저장할 리스트 초기화
+    menu_info = []
 
+    # 테이블의 각 행(iterate) 반복
+    for row in table.find_all('tr'):
+        # 날짜 셀 찾기
+        date_cell = row.find('th', {'rowspan': '1'})
+        if date_cell:
+            date = date_cell.text.strip()
+        
+        # 메뉴 셀 찾기
+        menu_cell = row.find('td')
+        if menu_cell:
+            menu = menu_cell.get_text(separator=', ').strip()
+            menu_info.append(f"{date} 점심 메뉴: {menu}")
 
-        if today == 5 or today == 6 :
-            print("토요일과 일요일은 운영하지 않아요~!")
-        else :
-            try :
-                lun = lunTd[today].split(",")
-            except :
-                lun = "점심 식단이 없습니다."
-
-            try :
-                din = dinTd[today].split(",")
-            except :
-                din = "저녁 식단이 없습니다."
-
-            print("- 웰스프레시 점심메뉴 -")
-            for item in lun :
-                print(item)
-            print()
-            print("- 웰스프레시 저녁메뉴 -")
-            for item in din:
-                print(item)
-            print("본 정보는 한국산업기술대학교 홈페이지 정보를 바탕으로 제공됩니다.")
-    except :
-        print("금일 학식정보가 업로드 되지 않았어요.")
+    # 추출한 메뉴 정보 출력
+    for info in menu_info:
+        print(info)
+else:
+    print(f"웹페이지를 가져오는데 실패했습니다. 상태 코드: {response.status_code}")
