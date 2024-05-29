@@ -5,25 +5,19 @@ import notice
 import menu
 import random
 
-# 셔틀은 이미 구현되있어서 그거 전용 함수
-def noFunc():
-    print("구현이 안됬어요 ㅜ")
-
 #기능 보여줄 함수
 def funcText():
     print("-----------기능-----------")
     print("학식 식단표 : 학식, ㅎㅅ")
-    print("인근역 막차 : 막차, ㅁㅊ")
     print("셔틀 시간표 : 셔틀, ㅅㅌ")
     print("날씨 : 날씨, ㄴㅆ")
     print("학사 공지 : 공지, ㄱㅈ")
     print("게임전적검색 : 게임, ㄱㅇ")
-    print("ㄴ 현재 지원되는 게임 : 롤, 메이플, 배그")
-    print("산돌이 끄기 : 산바, ㅅㅂ")
+    print("제돌이 끄기 : 제바, ㅈㅂ")
 
 # 산돌이 메인 함수
 def start() :
-    print("-------산돌이 v0.1-------")
+    print("-------제돌이 v0.1-------")
     print("기능 소개는 기능, ㄱㄴ을 입력하세요.")
     inp = '' # 발화 정보를 담는 변수
     inp2 = '' # 세부 발화 정보를 담는 변수
@@ -46,28 +40,15 @@ def start() :
             funcText()
         elif '학식' in inp or 'ㅎㅅ' in inp or '메뉴' in inp or 'ㅁㄴ' in inp or '밥' in inp or 'ㅂ' in inp or '배고' in inp:
             menu.menu()
-        elif '막차' in inp or 'ㅁㅊ' in inp:
-            station.station()
         elif '셔틀' in inp or 'ㅅㅌ' in inp:
-            #셔틀은 이미 산돌이에 구현되어있어서 구현 x
-            noFunc()
+            station.main()
         elif '날씨' in inp or 'ㄴㅆ' in inp :
-            wheather.wheather()
+            wheather.weather()
         elif '공지' in inp or 'ㄱㅈ' in inp :
-            notice.notice()
+            notice.get_jnu_notice()
         elif '게임' in inp or 'ㄱㅇ' in inp:
             while 1 :
-                inp2 = input("롤? 메이플?")
-                if "롤" in inp2 or "ㄹ" in inp2 :
-                    game.lol()
-                    break
-                elif "메이플" in inp2 or "ㅁㅇㅍ" in inp2 or "메이플스토리" in inp2 :
-                    game.maple()
-                    break
-                elif "ㅇㅇ" in inp2 or "응" in inp2 :
-                    break
-                else :
-                    print("무슨 게임 말하는 거에요?? 돌아가겠어요?")
+                game.lol()
         elif '산바' in inp or 'ㅅㅂ' in inp :
             print("이용해줘서 감사해요!")
             break

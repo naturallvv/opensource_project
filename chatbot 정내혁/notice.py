@@ -38,6 +38,3 @@ def get_jnu_notice():
     except AttributeError as e:
         print("학사 공지를 찾을 수 없습니다.")
         print(e)
-
-# 함수 호출
-get_jnu_notice()
