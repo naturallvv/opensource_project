@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-def wheather():
+def weather():
     try:
         url = 'https://search.naver.com/search.naver?query='
         aria = input("어떤 지역 날씨를 보여드릴까요?").strip()
