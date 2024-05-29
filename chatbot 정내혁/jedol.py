@@ -38,16 +38,16 @@ def start():
         if '기능' in inp or 'ㄱㄴ' in inp:
             funcText()
         elif '학식' in inp or 'ㅎㅅ' in inp or '메뉴' in inp or 'ㅁㄴ' in inp or '밥' in inp or 'ㅂ' in inp or '배고' in inp:
-            menu.menu()
+            pass
         elif '셔틀' in inp or 'ㅅㅌ' in inp:
             station.main()
         elif '날씨' in inp or 'ㄴㅆ' in inp:
-            pass
+            weather.weather()
         elif '공지' in inp or 'ㄱㅈ' in inp:
             notice.get_jnu_notice()
         elif '게임' in inp or 'ㄱㅇ' in inp:
             game.lol()
-        elif '산바' in inp or 'ㅅㅂ' in inp:
+        elif '제바' in inp or 'ㅈㅂ' in inp:
             print("이용해줘서 감사해요!")
             break
         else:
