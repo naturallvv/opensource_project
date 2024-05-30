@@ -4,7 +4,12 @@ PyQt5 Ripple Button
 https://stackoverflow.com/questions/64818740/how-to-add-ripple-effect
 
 Chat Server-Client
-https://blog.naver.com/nkj2001/222742365805
+https://oceancoding.blogspot.com/2019/05/blog-post_21.html
+https://oceancoding.blogspot.com/2019/05/blog-post_23.html
 
+ChatBot
+https://github.com/koptimizer/kakaotalk_chatbot_sandol
+
+------
 ML : Gesture Recognition
 https://github.com/kairess/gesture-recognition
