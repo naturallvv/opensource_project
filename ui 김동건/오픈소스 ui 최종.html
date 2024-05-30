@@ -161,8 +161,8 @@
     <script>
         function createTypingIndicator() {
             let msg = $('<div>').addClass('message bot').attr('id', 'typing-indicator');
-            let label = $('<div>').addClass('label bot-label').text('Chatbot');
-            let content = $('<div>').text('Chatbot is typing').append($('<span class="dot">.</span>')).append($('<span class="dot">.</span>')).append($('<span class="dot">.</span>'));
+            let label = $('<div>').addClass('label bot-label').text('제돌이');
+            let content = $('<div>').text('제돌이가 타이핑중 ..').append($('<span class="dot">.</span>')).append($('<span class="dot">.</span>')).append($('<span class="dot">.</span>'));
             msg.append(label).append(content);
             return msg;
         }
